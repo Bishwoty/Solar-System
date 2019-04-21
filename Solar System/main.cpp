@@ -8,6 +8,7 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
+#include <ctime>
 #include "planet.h"
 using namespace std;
 
@@ -39,14 +40,17 @@ double camPanVertical = 0;
 double camZoom = 0;
 
 // Scaleing
-double timeScale = 0.5;
-double planetScale = 0.40;
-double sunScale = 0.010;
-double orbitScale = 0.001;
-double moonScale = 0.2;
+double timeScale = 1;
+double planetScale = 0.01;
+double sunScale = 1.00;
+double orbitScale = 0.01;
+double moonScale = 1;
+double modifier = 1;
 
 // Toggles
 bool showOrbits = true;
+bool pause = false;
+string followObject = "sun";
 
 // Objects
 planet sun(695.508, 0, 1, 0.9, 0.1, 0.1);
@@ -88,6 +92,7 @@ int main(int argc, char ** argv) {
 }
 
 void init(int &argc, char ** argv) {
+	srand(time(NULL));
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
@@ -96,11 +101,19 @@ void init(int &argc, char ** argv) {
 }
 
 void createPlanets() {
+	// Planets
 	sun.addMoon("mercury", 2.4937, 57909.227, 0.2408467, 0.5, 0.5, 0.5);
 	sun.addMoon("venus", 6.0518, 108209.475, 0.61519726, 0.949, 0.808, 0.255);
 	sun.addMoon("earth", 6.371, 149598.262, 1.0000174, 0.1, 0.1, 0.8);
-	sun.moon("earth").addMoon("theMoon", 1.7375, 384.4, 0.074745, 0.8, 0.8, 0.8);
 	sun.addMoon("mars", 3.3895, 227943.824, 1.88108476, 1, 0, 0);
+	sun.addMoon("jupiter", 69.911, 778340.821, 11.862615, 1, .4, .4);
+	sun.addMoon("saturn", 58.232, 1426666.422, 29.447498, 1, 1, 0.8);
+	sun.addMoon("uranus", 25.362, 2870658.186, 84.016846, 0.8, 0.8, 1);
+	sun.addMoon("neptune", 24.622, 4498396.441, 164.79132, 0.2, 0.2, 1);
+
+
+	// Moons
+	sun.moon("earth").addMoon("theMoon", 1.7375, 384.4, 0.074745, 0.8, 0.8, 0.8);
 }
 
 void PrintString(int x, int y, void *font, int fontSize, int lineBuffer, string str) {
@@ -111,16 +124,17 @@ void PrintString(int x, int y, void *font, int fontSize, int lineBuffer, string 
 		str.erase(0, i + 1);
 	}
 	myLines.push_back(str);
-	for(int i = 0; i < myLines.size(); i++) {
+	for(unsigned int i = 0; i < myLines.size(); i++) {
 		glRasterPos2i(x, y - fontSize * lineNumber - lineBuffer * (lineNumber - 1));
-		for(int j = 0; j < myLines[i].length(); j++)
+		for(unsigned int j = 0; j < myLines[i].length(); j++)
 			glutBitmapCharacter(font, myLines[i][j]);
 		lineNumber++;
 	}
 }
 
 void Idle() {
-	tick(sun);
+	if(!pause)
+		tick(sun);
 	
 	glutPostRedisplay();
 }
@@ -128,22 +142,22 @@ void Idle() {
 void Special(int key, int x, int y) {
 	switch(key) {
 	case GLUT_KEY_UP:
-		camPanVertical += 1;
+		camPanVertical += modifier;
 		break;
 	case GLUT_KEY_LEFT:
-		camPanHorizontal -= 1;
+		camPanHorizontal -= modifier;
 		break;
 	case GLUT_KEY_DOWN:
-		camPanVertical -= 1;
+		camPanVertical -= modifier;
 		break;
 	case GLUT_KEY_RIGHT:
-		camPanHorizontal += 1;
+		camPanHorizontal += modifier;
 		break;
 	case GLUT_KEY_PAGE_UP:
-		camZoom += 1;
+		camZoom += modifier;
 		break;
 	case GLUT_KEY_PAGE_DOWN:
-		camZoom -= 1;
+		camZoom -= modifier;
 		break;
 	case GLUT_KEY_F1:
 		showOrbits = !showOrbits;
@@ -168,7 +182,70 @@ void Keyboard(unsigned char key, int x, int y) {
 	case 'd':
 		changeAngle(camRotateHorizontal, -1);
 		break;
-	default:
+	case '0':
+		followObject = "sun";
+		break;
+	case '1':
+		followObject = "mercury";
+		break;
+	case '2':
+		followObject = "venus";
+		break;
+	case '3':
+		followObject = "earth";
+		break;
+	case '4':
+		followObject = "mars";
+		break;
+	case '5':
+		followObject = "jupiter";
+		break;
+	case '6':
+		followObject = "saturn";
+		break;
+	case '7':
+		followObject = "uranus";
+		break;
+	case '8':
+		followObject = "neptune";
+		break;
+	case '+':
+		modifier *= 2;
+		break;
+	case '-':
+		modifier /= 2;
+		break;
+	case 'r':
+		camPanHorizontal = 0;
+		camPanVertical = 0;
+		camZoom = 0;
+		break;
+	case '[':
+		planetScale /= 1.1;
+		break;
+	case ']':
+		planetScale *= 1.1;
+		break;
+	case '{':
+		sunScale /= 1.1;
+		break;
+	case '}':
+		sunScale *= 1.1;
+		break;
+	case '<':
+		timeScale /= 1.1;
+		break;
+	case '>':
+		timeScale *= 1.1;
+		break;
+	case '(':
+		moonScale /= 1.1;
+		break;
+	case ')':
+		moonScale *= 1.1;
+		break;
+	case ' ':
+		pause = !pause;
 		break;
 	}
 }
@@ -219,18 +296,23 @@ void Display() {
 	glMatrixMode(GL_MODELVIEW);
 
 	glLoadIdentity();
-	gluPerspective(63, double(WindowWidth) / double(WindowHeight), 1, 1000);
-	//glFrustum(-10, 10, -10, 10, 20, 1000);
+	gluPerspective(63, double(WindowWidth) / double(WindowHeight), 0.01, 1000000);
 	gluLookAt(eyex, eyey, eyez, atx, aty, atz, upx, upy, upz);
 
 	glTranslatef(-camPanHorizontal, -camPanVertical, camZoom);
+	
 	glRotatef(camRotateVertical, 1, 0, 0);
 	glRotatef(camRotateHorizontal, 0, 1, 0);
 
+	if(followObject != "sun")
+		glTranslatef(
+			-sun.moon(followObject).distance() * orbitScale * cos(sun.moon(followObject).angularPosition() * PI / 180),
+			0,
+			sun.moon(followObject).distance() * orbitScale * sin(sun.moon(followObject).angularPosition() * PI / 180));
 	//DRAW
 	glPushMatrix();
 	glColor3f(sun.red(), sun.green(), sun.blue());
-	createSphere(sun.radius()*sunScale);
+	createSphere(sun.radius() * planetScale * sunScale);
 	glPopMatrix();
 	for(auto it = sun.begin(); it != sun.end(); ++it)
 		drawPlanet(it -> second);
@@ -239,7 +321,13 @@ void Display() {
 	glViewport(0, 0, WindowWidth, WindowHeight);
 	glLoadIdentity();
 	gluOrtho2D(0, WindowWidth, 0, WindowHeight);
-	string text = "CamPanX: " + to_string(camPanHorizontal) + "\nCamPanY: " + to_string(camPanVertical) + "\nr: " + to_string(sqrt(pow(eyex, 2) + pow(eyez, 2))) + "\nTheta: ";
+	string text =
+		"Modifier = " + to_string(modifier) +
+		"\nCamPanX: " + to_string(camPanHorizontal) + 
+		"\nCamPanY: " + to_string(camPanVertical) + 
+		"\nFollowing: " + followObject + 
+		"\nTime Speed: " + to_string(timeScale) + " days/frame" +
+		"\nPlanet Size: " + to_string(planetScale * 100) + "x";
 	glColor3f(1, 1, 1);
 	PrintString(2, WindowHeight - 14, GLUT_BITMAP_HELVETICA_12, 12, 2, text);
 
@@ -263,7 +351,7 @@ void drawPlanet(planet & origin) {
 	glPushMatrix();
 	if(showOrbits) {
 		glColor3f(0, 1, 0);
-		createCircle(origin.distance() * orbitScale, 50);
+		createCircle(origin.distance() * orbitScale, 1000);
 	}
 	glColor3f(origin.red(), origin.green(), origin.blue());
 	glRotatef(origin.angularPosition(), 0, 1, 0);
@@ -272,7 +360,7 @@ void drawPlanet(planet & origin) {
 	for(auto it = origin.begin(); it != origin.end(); ++it) {
 		glPushMatrix();
 		glRotatef(it -> second.angularPosition(), 0, 1, 0);
-		glTranslatef(it -> second.distance() * planetScale * moonScale, 0, 0);
+		glTranslatef(it -> second.distance() * orbitScale * moonScale, 0, 0);
 		glColor3f(it -> second.red(), it -> second.red(), it -> second.blue());
 		createSphere(it -> second.radius()*planetScale);
 		glPopMatrix();
@@ -281,7 +369,7 @@ void drawPlanet(planet & origin) {
 }
 
 void tick(planet & origin) {
-	origin.orbit((1 / origin.period()) * timeScale);
+	origin.orbit(((1 / origin.period())) * (480.0/487.0) * timeScale);
 	for(auto it = origin.begin(); it != origin.end(); ++it) {
 		tick(it->second);
 

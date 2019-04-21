@@ -1,6 +1,5 @@
 #include "planet.h"
 #include <string>
-using namespace std;
 
 planet::planet() {
 	planetRadius = 1;
@@ -16,7 +15,7 @@ planet::planet(double radius, double distance, double period, float R, float G, 
 	color[0] = R;
 	color[1] = G;
 	color[2] = B;
-	orbitAngle = 0;
+	orbitAngle = double(rand() % 36000) / 100;
 }
 
 double & planet::radius() {
@@ -47,11 +46,11 @@ float & planet::blue() {
 	return color[2];
 }
 
-map<string, planet>::iterator planet::begin() {
+std::map<std::string, planet>::iterator planet::begin() {
 	return moons.begin();
 }
 
-map<string, planet>::iterator planet::end() {
+std::map<std::string, planet>::iterator planet::end() {
 	return moons.end();
 }
 
@@ -64,11 +63,11 @@ void planet::orbit(double changeInAngle) {
 	}
 }
 
-void planet::addMoon(string name, double radius, double distance, double period, float R, float G, float B) {
+void planet::addMoon(std::string name, double radius, double distance, double period, float R, float G, float B) {
 	moons[name] = planet(radius, distance, period, R, G, B);
 }
 
-planet & planet::moon(string name) {
+planet & planet::moon(std::string name) {
 	return moons[name];
 }
 

@@ -1,7 +1,6 @@
 #pragma once
 #include <map>
 #include <string>
-using namespace std;
 
 class planet {
 public:
@@ -14,11 +13,11 @@ public:
 	float & red();
 	float & green();
 	float & blue();
-	map<string,planet>::iterator begin();
-	map<string, planet>::iterator end();
+	std::map<std::string,planet>::iterator begin();
+	std::map<std::string, planet>::iterator end();
 	void orbit(double changeInAngle);
-	void addMoon(string name, double radius, double distance, double period, float R, float G, float B);
-	planet & moon(string name);
+	void addMoon(std::string name, double radius, double distance, double period, float R, float G, float B);
+	planet & moon(std::string name);
 
 private:
 	double planetRadius;
@@ -26,5 +25,5 @@ private:
 	double orbitalPeriod;
 	double orbitAngle;
 	float color[3];
-	map<string,planet> moons;
+	std::map<std::string,planet> moons;
 };
