@@ -9,6 +9,7 @@
 #include <cmath>
 #include <vector>
 #include <ctime>
+#include <chrono>
 #include "planet.h"
 using namespace std;
 
@@ -41,9 +42,9 @@ double camZoom = 0;
 
 // Scaleing
 double timeScale = 1;
-double planetScale = 0.01;
+double planetScale = 0.0001;
 double sunScale = 1.00;
-double orbitScale = 0.01;
+double orbitScale = 0.0001;
 double moonScale = 1;
 double modifier = 1;
 
@@ -97,6 +98,9 @@ void init(int &argc, char ** argv) {
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glCullFace(GL_BACK);
+	//glEnable(GL_LIGHTING);
+	//glEnable(GL_LIGHT0);
+	//glEnable(GL_COLOR_MATERIAL);
 	createPlanets();
 }
 
@@ -111,9 +115,12 @@ void createPlanets() {
 	sun.addMoon("uranus", 25.362, 2870658.186, 84.016846, 0.8, 0.8, 1);
 	sun.addMoon("neptune", 24.622, 4498396.441, 164.79132, 0.2, 0.2, 1);
 
-
 	// Moons
-	sun.moon("earth").addMoon("theMoon", 1.7375, 384.4, 0.074745, 0.8, 0.8, 0.8);
+	sun.moon("earth").addMoon("the moon", 1.7375, 384.4, 0.074745, 0.8, 0.8, 0.8);
+	sun.moon("jupiter").addMoon("io", 1.8216, 421.800, 0.00484, 1, 1, 1);
+	sun.moon("jupiter").addMoon("europa", 1.5618, 671.100, 0.00972, 1, 1, 1);
+	sun.moon("jupiter").addMoon("ganymede", 2.6312, 1070.400, 0.01948, 1, 1, 1);
+	sun.moon("jupiter").addMoon("callisto", 2.4103, 1882.700, 0.04570, 1, 1, 1);
 }
 
 void PrintString(int x, int y, void *font, int fontSize, int lineBuffer, string str) {
@@ -317,17 +324,26 @@ void Display() {
 	for(auto it = sun.begin(); it != sun.end(); ++it)
 		drawPlanet(it -> second);
 
+	// Find FPS
+	static chrono::time_point<chrono::steady_clock> start = chrono::steady_clock::now();
+	chrono::time_point<chrono::steady_clock> end;
+	end = chrono::steady_clock::now();
+	chrono::duration<double> elapsed = end - start;
+	start = end;
+	double fps = 1 / elapsed.count();
+
 	// Text
 	glViewport(0, 0, WindowWidth, WindowHeight);
 	glLoadIdentity();
 	gluOrtho2D(0, WindowWidth, 0, WindowHeight);
 	string text =
-		"Modifier = " + to_string(modifier) +
+		"FPS: " + to_string(int(fps)) +
+		"\nModifier = " + to_string(modifier) +
 		"\nCamPanX: " + to_string(camPanHorizontal) + 
 		"\nCamPanY: " + to_string(camPanVertical) + 
 		"\nFollowing: " + followObject + 
 		"\nTime Speed: " + to_string(timeScale) + " days/frame" +
-		"\nPlanet Size: " + to_string(planetScale * 100) + "x";
+		"\nPlanet Size: " + to_string(planetScale * 10000) + "x";
 	glColor3f(1, 1, 1);
 	PrintString(2, WindowHeight - 14, GLUT_BITMAP_HELVETICA_12, 12, 2, text);
 
