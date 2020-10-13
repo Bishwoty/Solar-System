@@ -9,9 +9,9 @@ By default, each frame is 1 Earth day and all objects are correctly scaled by si
 `F1`: Toggle orbit guides<br>
 `0-9`: Change focused object<br>
 `r`: Reset pan and zoom<br>
-`[/]`: Increase/Decrease size of all objects<br>
-`{/}`: Increase/Decrease size of The Sun<br>
-`(/)`: Increase/Decrease orbit distance of moons<br>
-`</>`: Speed up/ Slow down time<br>
+`[`/`]`: Increase/Decrease size of all objects<br>
+`{`/`}`: Increase/Decrease size of The Sun<br>
+`(`/`)`: Increase/Decrease orbit distance of moons<br>
+`<`/`>`: Speed up/ Slow down time<br>
 `Space`: Pause time<br>
 `Esc`: Quit<br>
