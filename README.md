@@ -7,7 +7,7 @@ By default, each frame is 1 Earth day and all objects are correctly scaled by si
 `WASD`: Rotate camera around focus<br>
 `Page Up/Page Down`: Increase/Decrease zoom, affected by modifier<br>
 `F1`: Toggle orbit guides<br>
-`0-9`: Change focused object<br>
+`0-8`: Change focused planet<br>
 `r`: Reset pan and zoom<br>
 `[`/`]`: Increase/Decrease size of all objects<br>
 `{`/`}`: Increase/Decrease size of The Sun<br>
