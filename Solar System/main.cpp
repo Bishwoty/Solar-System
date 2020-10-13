@@ -105,6 +105,11 @@ void init(int &argc, char ** argv) {
 }
 
 void createPlanets() {
+	// Planet stats found at https://solarsystem.nasa.gov/planet-compare/
+	// Radius in 1000s of kms
+	// Orbital distance in 1000s of kms
+	// Orbital Period in Earth Years
+
 	// Planets
 	sun.addMoon("mercury", 2.4937, 57909.227, 0.2408467, 0.5, 0.5, 0.5);
 	sun.addMoon("venus", 6.0518, 108209.475, 0.61519726, 0.949, 0.808, 0.255);
