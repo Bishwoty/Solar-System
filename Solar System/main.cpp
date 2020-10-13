@@ -390,7 +390,8 @@ void drawPlanet(planet & origin) {
 }
 
 void tick(planet & origin) {
-	origin.orbit(((1 / origin.period())) * (480.0/487.0) * timeScale);
+	// Default tick/frame is 1 Earth day
+	origin.orbit(((1 / origin.period())) * (360.0/365.0) * timeScale);
 	for(auto it = origin.begin(); it != origin.end(); ++it) {
 		tick(it->second);
 
